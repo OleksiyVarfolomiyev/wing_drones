@@ -12,7 +12,7 @@ def format_money(value):
 
 def read_data():
     import datetime as dt
-    dtypes = { 'Link': 'str', 'Title': 'str', 'Date': 'str', 'Time': 'str', 'Media type': 'str', 'Categories': 'str', 'Subcategory': 'str',
+    dtypes = { 'Link': 'str', 'Title': 'str', 'Date': 'str', 'Time': 'str', 'Media type': 'str', 'Categories': 'str',
               'Language': 'str', 'Country': 'str', 'Region': 'str', 'Source': 'str', 'Audience': 'str', 'Profile': 'str',
               'Followers': 'int', 'Friends': 'int', 'Following': 'int',
               'Comments': 'int', 'Shares': 'int', 'Likes': 'int', 'Views': 'int'}
