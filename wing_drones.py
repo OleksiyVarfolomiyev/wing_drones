@@ -24,7 +24,7 @@ def show_metrics(df):
     starting_date = df['Date'].min()
     end_date = df['Date'].max()
 
-    col1, col2 = st.columns(3)
+    col1, col2 = st.columns(2)
     col1.metric("Days", (end_date - starting_date).days, "1", delta_color="normal")
     col2.metric("Publications", etl.format_money(len(df)), len(df[df['Date'] == end_date  - pd.Timedelta(days=1)]), delta_color="normal")
     #col3.metric("Spending",  etl.format_money(spending_total.UAH.sum()),  spending_latest, delta_color="normal")
