@@ -27,7 +27,6 @@ def show_metrics(df):
     col1, col2 = st.columns(2)
     col1.metric("Days", (end_date - starting_date).days, "1", delta_color="normal")
     col2.metric("Publications", etl.format_money(len(df)), len(df[df['Date'] == end_date  - pd.Timedelta(days=1)]), delta_color="normal")
-    #col3.metric("Spending",  etl.format_money(spending_total.UAH.sum()),  spending_latest, delta_color="normal")
 
 df = etl.read_data()
 show_metrics(df)
@@ -58,21 +57,14 @@ def show_categories_countries_regions(df):
     region_counts = region_counts.drop('Undefined')
     fig2 = charting_tools.pie_plot(region_counts.head(5), 'Count', "Region", False)
 
-    fig1.write_image("fig/Country.png")
-    fig2.write_image("fig/Region.png")
-
     fig = charting_tools.subplot_horizontal(fig1, fig2, 1, 2, 'domain', 'domain', 'Country', 'Region', False)
     st.plotly_chart(fig, use_container_width=True)
 
 show_categories_countries_regions(df)
 
 def show_publications_by_media_type(df):
-    """ Show publications # The `by med` parameter is used to group the data by media type. It is used
-    # in the `show_top_profiles_by_publication_count` function to calculate the
-    # count of each media type and author combination in the original DataFrame.
-    # This allows us to determine the top profiles by publication count in each
-    # media type.
-    by media type"""
+    """ Show publications by media type"""
+
     media_types = df['Media type'].unique().tolist()
 
     col0, col1, col2 = st.columns(3)
@@ -103,12 +95,8 @@ def show_publications_by_media_type(df):
 
 show_publications_by_media_type(df)
 
-# Ring plot - Donations and Spending by Category
 def show_sources(df):
     """ Show sources"""
-    #starting_date = df['Date'].min()
-    #end_date = df['Date'].max()
-
     source_counts = pd.DataFrame(df['Source'].value_counts()).reset_index()
     source_counts.columns = ['Source', 'Count']
     df_unique_authors = df.drop_duplicates(subset=['Source', 'Profile'])
@@ -139,49 +127,6 @@ def show_sources(df):
     st.plotly_chart(fig, use_container_width=True)
 
 show_sources(df)
-
-def donations_spending_by_period_by_category(donations_total_by_category, spending_total_by_category,
-                                            large_donations_by_category, large_spending_by_category,
-                                            donations_below_large_by_category, spending_below_large_by_category):
-    """Donations/Spending by time period (d, w, m) and large/regular amounts"""
-    #main_donation_categories = donations_total_by_category.groupby('Category')['UAH'].sum().sort_values(ascending = False).index[:4].tolist()
-    main_donation_categories = donations_total_by_category.groupby('Category')['UAH'].sum().sort_values(ascending=False).index.tolist()
-    #main_spending_categories = spending_total_by_category.groupby('Category')['UAH'].sum().sort_values(ascending = False).index[:4].tolist()
-    main_spending_categories = spending_total_by_category.groupby('Category')['UAH'].sum().sort_values(ascending = False).index.tolist()
-    col0, col1, col2 = st.columns(3)
-    with col0:
-        amount = st.selectbox(' ',[' all ', '>100K', '<100K'])
-    with col1:
-        selected_period = st.selectbox(' ',['monthly', 'weekly', 'daily', 'yearly'])
-    with col2:
-        donations_spending = st.selectbox(' ', ['donations', 'spending'])
-
-    if amount == '>100K':
-        donations_by_category = large_donations_by_category
-        spending_by_category = large_spending_by_category
-    elif amount == '<100K':
-        donations_by_category = donations_below_large_by_category
-        spending_by_category = spending_below_large_by_category
-    else:
-        donations_by_category = donations_total_by_category
-        spending_by_category = spending_total_by_category
-
-    if donations_spending == 'donations':
-        main_categories = main_donation_categories
-        tx_by_category = donations_by_category
-    else:
-        main_categories = main_spending_categories
-        tx_by_category = spending_by_category
-
-    fig = charting_tools.chart_by_period(tx_by_category, main_categories, selected_period[0],
-                                        f'{selected_period} {amount} {donations_spending}')
-    st.plotly_chart(fig, use_container_width=True)
-
-# donations_spending_by_period_by_category(donations_total_by_category, spending_total_by_category,
-#                                                                         large_donations_by_category, large_spending_by_category,
-#                                                                         donations_below_large_by_category, spending_below_large_by_category)
-
-#st.markdown("Visit [Dignitas Fund](https://dignitas.fund/)")
 
 
 def show_top_profiles_by_publication_count(df):
